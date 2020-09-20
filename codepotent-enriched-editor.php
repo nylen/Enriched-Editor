@@ -146,7 +146,7 @@ class Enriched_Editor {
 		add_filter( 'tiny_mce_plugins', array( $this, 'tiny_mce_plugins' ), 999 );
 		add_action( 'after_wp_tiny_mce', array( $this, 'after_wp_tiny_mce' ) );
 
-		require_once(plugins_url('codepotent-update-manager/includes/UpdateClient.class.php'));
+		require_once(plugin_dir_path(__FILE__).'includes/UpdateClient.class.php');
 	}
 
 	public function disable_for_editor( $settings, $editor_id ) {
@@ -225,7 +225,7 @@ class Enriched_Editor {
 	}
 
 	public function enqueue_scripts( $page ) {
-		if ( 'settings_page_enriched-editor' == $page ) {
+		if ( 'settings_page_codepotent-enriched-editor' == $page ) {
 			$this->set_paths();
 			wp_enqueue_script( 'wysiwyg-js', WYSIWYG_URL . 'js/wysiwyg-scripts.js', array( 'jquery-ui-sortable' ), '4.0', true );
 			wp_enqueue_style( 'wysiwyg-mce-skin', includes_url( 'js/tinymce/skins/lightgray/skin.min.css' ), array(), '4.0' );
