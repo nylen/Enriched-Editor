@@ -4,7 +4,7 @@
  * -----------------------------------------------------------------------------
  * Plugin Name: Enriched Editor
  * Description: Add rich formatting, tool, and controls to the ClassicPress editor.
- * Version: 0.1.0
+ * Version: 1.0.0
  * Author: Code Potent
  * Author URI: https://codepotent.com
  * Plugin URI: https://codepotent.com/classicpress/plugins
