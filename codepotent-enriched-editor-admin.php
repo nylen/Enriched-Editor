@@ -309,29 +309,29 @@ foreach( $all_buttons as $button => $name ) {
 	<h3><?php _e( 'Options', 'codepotent-enriched-editor' ); ?></h3>
 	<div>
 		<label><input type="checkbox" name="options[]" value="advlist" id="advlist" <?php if ( $this->check_user_setting( 'advlist' ) ) echo ' checked="checked"'; ?> />
-		<?php _e( 'List Style Options', 'codepotent-enriched-editor' ); ?></label>
+		<?php _e( 'Enhanced Lists', 'codepotent-enriched-editor' ); ?></label>
 		<p>
-			<?php _e( 'Enable more list options: upper or lower case letters for ordered lists, disk or square for unordered lists, etc.', 'codepotent-enriched-editor' ); ?>
+			<?php _e( 'Enable advanced list options, including upper-case, lower-case, disk, square, circle, etc.', 'codepotent-enriched-editor' ); ?>
 		</p>
 	</div>
 	<div>
 		<label><input type="checkbox" name="options[]" value="contextmenu" id="contextmenu" <?php if ( $this->check_user_setting( 'contextmenu' ) ) echo ' checked="checked"'; ?> />
-		<?php _e( 'Context Menu', 'codepotent-enriched-editor' ); ?></label>
+		<?php _e( 'Right-Click', 'codepotent-enriched-editor' ); ?></label>
 		<p>
-			<?php _e( 'Replace the browser context (right-click) menu.', 'codepotent-enriched-editor' ); ?>
+			<?php _e( 'Enable link and table insertion by right-clicking the editor.', 'codepotent-enriched-editor' ); ?>
 		</p>
 	</div>
 	<div>
 		<label><input type="checkbox" name="options[]" value="advlink" id="advlink" <?php if ( $this->check_user_setting( 'advlink' ) ) echo ' checked="checked"'; ?> />
-		<?php _e( 'Alternative link dialog', 'codepotent-enriched-editor' ); ?></label>
+		<?php _e( 'Simplified Links', 'codepotent-enriched-editor' ); ?></label>
 		<p>
-			<?php _e( 'Open the TinyMCE link dialog when using the link button on the toolbar or the link menu item.', 'codepotent-enriched-editor' ); ?>
+			<?php _e( 'Use a simplified dialog for creating links.', 'codepotent-enriched-editor' ); ?>
 		</p>
 	</div>
 	<div>
 		<label><input type="checkbox" name="options[]" value="fontsize_formats" id="fontsize_formats" <?php if ( $this->check_user_setting( 'fontsize_formats' ) ) echo ' checked="checked"'; ?> />
-		<?php _e( 'Font sizes', 'codepotent-enriched-editor' ); ?></label>
-		<p><?php printf( __( 'Replace the size setting available for fonts with: %s.', 'codepotent-enriched-editor' ), $this->fontsize_formats ); ?></p>
+		<?php _e( 'Font Sizing', 'codepotent-enriched-editor' ); ?></label>
+		<p><?php _e( 'Use pixels (instead of points) for Font Sizes menu.', 'codepotent-enriched-editor' ); ?></p>
 	</div>
 </div>
 <?php
@@ -357,23 +357,32 @@ if ( ! is_multisite() || current_user_can( 'manage_sites' ) ) {
 	?>
 	<div>
 		<label><input type="checkbox" name="admin_options[]" value="importcss" id="importcss" <?php if ( ! $disabled && $this->check_admin_setting( 'importcss' ) ) echo ' checked="checked"'; echo $disabled; ?> />
-		<?php _e( 'Create CSS classes menu', 'codepotent-enriched-editor' ); ?></label>
+		<?php _e( 'Custom Styles', 'codepotent-enriched-editor' ); ?></label>
 		<p>
 		<?php
 
-		_e( 'Load the CSS classes used in editor-style.css and replace the Formats menu.', 'codepotent-enriched-editor' );
+
+		$css_root = str_replace(site_url(), '', get_stylesheet_directory_uri());
+		$css_path = $css_root.'/assets/css/editor-style.css';
+		printf(
+		esc_html__('Import styles from %s into the Formats menu.', 'codepotent-enriched-editor'),
+		'<code>'.$css_path.'</code>');
+
+
+
+//		_e( 'Load the CSS classes from <code>/assets/css/editor-style.css</code> into the Formats menu.', 'codepotent-enriched-editor' );
 
 		if ( $has_editor_style === 'not-supporetd' ) {
 			?>
 				<br>
 				<span class="tadv-error"><?php _e( 'ERROR:', 'codepotent-enriched-editor' ); ?></span>
-				<?php _e( 'Your theme does not support editor-style.css.', 'codepotent-enriched-editor' ); ?>
+				<?php _e( 'Unable to locate ../assets/css/editor-style.css.', 'codepotent-enriched-editor' ); ?>
 			<?php
 		} elseif ( $disabled ) {
 			?>
 				<br>
 				<span class="tadv-error"><?php _e( 'ERROR:', 'codepotent-enriched-editor' ); ?></span>
-				<?php _e( 'A stylesheet file named editor-style.css was not added by your theme.', 'codepotent-enriched-editor' ); ?>
+				<?php _e( 'Unable to locate ../assets/css/editor-style.css.', 'codepotent-enriched-editor' ); ?>
 			<?php
 		}
 
@@ -386,47 +395,19 @@ if ( ! is_multisite() || current_user_can( 'manage_sites' ) ) {
 	</div>
 	<div>
 		<label><input type="checkbox" name="admin_options[]" value="no_autop" id="no_autop" <?php if ( $this->check_admin_setting( 'no_autop' ) ) echo ' checked="checked"'; ?> />
-		<?php _e( 'Keep paragraph tags', 'codepotent-enriched-editor' ); ?></label>
+		<?php _e( 'Preserve Tags', 'codepotent-enriched-editor' ); ?></label>
 		<p>
-			<?php _e( 'Stop removing the &lt;p&gt; and &lt;br /&gt; tags when saving and show them in the Text editor.', 'codepotent-enriched-editor' ); ?>
-			<?php _e( 'This will make it possible to use more advanced coding in the Text editor without the back-end filtering affecting it much.', 'codepotent-enriched-editor' ); ?>
-			<?php _e( 'However it may behave unexpectedly in rare cases, so test it thoroughly before enabling it permanently.', 'codepotent-enriched-editor' ); ?>
-			<?php _e( 'Line breaks in the Text editor would still affect the output, in particular do not use empty lines, line breaks inside HTML tags or multiple &lt;br /&gt; tags.', 'codepotent-enriched-editor' ); ?>
-		</p>
-	</div>
-	<div>
-		<label><input type="checkbox" name="admin_options[]" value="paste_images" id="paste_images" <?php if ( $this->check_admin_setting( 'paste_images' ) ) echo ' checked="checked"'; ?> />
-		<?php _e( 'Enable pasting of image source', 'codepotent-enriched-editor' ); ?></label>
-		<p>
-			<?php _e( 'Works only in Firefox and Safari. These browsers support pasting of images directly in the editor and convert them to base64 encoded text.', 'codepotent-enriched-editor' ); ?>
-			<?php _e( 'This is not acceptable for larger images like photos or graphics, but may be useful in some cases for very small images like icons, not larger than 2-3KB.', 'codepotent-enriched-editor' ); ?>
-			<?php _e( 'These images will not be available in the Media Library.', 'codepotent-enriched-editor' ); ?>
+			<?php _e( 'Preserve &lt;p&gt; and &lt;br&gt; tags without replacing them.', 'codepotent-enriched-editor' ); ?>
 		</p>
 	</div>
 	</div>
 
 	<div class="advanced-options">
-	<h3><?php _e( 'Administration', 'codepotent-enriched-editor' ); ?></h3>
+	<h3><?php _e( 'Import/Export', 'codepotent-enriched-editor' ); ?></h3>
 	<div>
-		<h4><?php _e( 'Settings import and export', 'codepotent-enriched-editor' ); ?></h4>
 		<p>
 			<input type="submit" class="button" name="tadv-export-settings" value="<?php _e( 'Export Settings', 'codepotent-enriched-editor' ); ?>" /> &nbsp;
 			<input type="submit" class="button" name="tadv-import-settings" value="<?php _e( 'Import Settings', 'codepotent-enriched-editor' ); ?>" />
-		</p>
-	</div>
-	<div>
-		<h4><?php _e( 'Enable the editor enhancements for:', 'codepotent-enriched-editor' ); ?></h4>
-		<p>
-			<label><input type="checkbox" name="tadv_enable_at[]" value="edit_post_screen" <?php if ( $this->check_admin_setting( 'enable_edit_post_screen' ) ) echo ' checked="checked"'; ?> />
-			<?php _e( 'The main editor (Add New and Edit posts and pages)', 'codepotent-enriched-editor' ); ?></label>
-		</p>
-		<p>
-			<label><input type="checkbox" name="tadv_enable_at[]" value="rest_of_wpadmin" <?php if ( $this->check_admin_setting( 'enable_rest_of_wpadmin' ) ) echo ' checked="checked"'; ?> />
-			<?php _e( 'Other editors in wp-admin', 'codepotent-enriched-editor' ); ?></label>
-		</p>
-		<p>
-			<label><input type="checkbox" name="tadv_enable_at[]" value="on_front_end" <?php if ( $this->check_admin_setting( 'enable_on_front_end' ) ) echo ' checked="checked"'; ?> />
-			<?php _e( 'Editors on the front end of the site', 'codepotent-enriched-editor' ); ?></label>
 		</p>
 	</div>
 	</div>
