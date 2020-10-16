@@ -411,6 +411,10 @@ if ( ! is_multisite() || current_user_can( 'manage_sites' ) ) {
 		</p>
 	</div>
 	</div>
+	<input type="hidden" name="tadv_enable_at[]" value="edit_post_screen">
+	<input type="hidden" name="tadv_enable_at[]" value="rest_of_wpadmin">
+	<input type="hidden" name="tadv_enable_at[]" value="on_front_end">
+
 	<?php
 
 }

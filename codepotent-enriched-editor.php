@@ -4,7 +4,7 @@
  * -----------------------------------------------------------------------------
  * Plugin Name: Enriched Editor
  * Description: Add rich formatting, tool, and controls to the ClassicPress editor.
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: Code Potent
  * Author URI: https://codepotent.com
  * Plugin URI: https://codepotent.com/classicpress/plugins
@@ -145,6 +145,8 @@ class Enriched_Editor {
 		add_filter( 'mce_external_plugins', array( $this, 'mce_external_plugins' ), 999 );
 		add_filter( 'tiny_mce_plugins', array( $this, 'tiny_mce_plugins' ), 999 );
 		add_action( 'after_wp_tiny_mce', array( $this, 'after_wp_tiny_mce' ) );
+
+		add_action('upgrader_process_complete', [$this, 'upgrade_completed'], 10, 2 );
 
 		require_once(plugin_dir_path(__FILE__).'includes/UpdateClient.class.php');
 	}
@@ -862,6 +864,18 @@ class Enriched_Editor {
 
 	public function add_menu() {
 		add_options_page( 'Enriched Editor Settings', 'Enriched Editor', 'manage_options', 'codepotent-enriched-editor', array( $this, 'settings_page' ) );
+	}
+
+	public function upgrade_completed($upgrader_object, $options) {
+		if ($options['action'] == 'update') {
+			if ($options['type'] == 'plugin') {
+				if (!empty($options['plugins'])) {
+					if (in_array(plugin_basename(__FILE__), $options['plugins'], true)) {
+						update_option('tadv_admin_settings', ['disabled_editors'=>'']);
+					}
+				}
+			}
+		}
 	}
 
 	/**
