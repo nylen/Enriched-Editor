@@ -4,10 +4,10 @@
  * -----------------------------------------------------------------------------
  * Plugin Name: Enriched Editor
  * Description: Add rich formatting, tool, and controls to the ClassicPress editor.
- * Version: 1.0.1
- * Author: Code Potent
- * Author URI: https://codepotent.com
- * Plugin URI: https://codepotent.com/classicpress/plugins
+ * Version: 1.1.0
+ * Author: ClassicPress Contributors
+ * Author URI: https://www.classicpress.net
+ * Plugin URI: https://www.classicpress.net
  * Text Domain: codepotent-enriched-editor
  * Domain Path: /languages
  * -----------------------------------------------------------------------------
@@ -18,12 +18,7 @@
  * -----------------------------------------------------------------------------
  * A fork of TinyMCE Advanced, Copyright 2007+, Andrew Ozz. All rights reserved.
  * -----------------------------------------------------------------------------
- *           ____          _      ____       _             _
- *          / ___|___   __| | ___|  _ \ ___ | |_ ___ _ __ | |_
- *         | |   / _ \ / _` |/ _ \ |_) / _ \| __/ _ \ '_ \| __|
- *         | |__| (_) | (_| |  __/  __/ (_) | ||  __/ | | | |_
- *          \____\___/ \__,_|\___|_|   \___/ \__\___|_| |_|\__|.com
- *
+ * Adopted by ClassicPress Contributors, 06/01/2021
  * -----------------------------------------------------------------------------
  */
 
@@ -146,9 +141,41 @@ class Enriched_Editor {
 		add_filter( 'tiny_mce_plugins', array( $this, 'tiny_mce_plugins' ), 999 );
 		add_action( 'after_wp_tiny_mce', array( $this, 'after_wp_tiny_mce' ) );
 
-		add_action('upgrader_process_complete', [$this, 'upgrade_completed'], 10, 2 );
+		add_action('upgrader_process_complete', [$this, 'upgrade_completed'], 10, 2);
 
+		require_once(plugin_dir_path(__FILE__).'includes/constants.php');
 		require_once(plugin_dir_path(__FILE__).'includes/UpdateClient.class.php');
+
+		// POST-ADOPTION: Remove these actions before pushing your next update.
+		add_action('upgrader_process_complete', [$this, 'enable_adoption_notice'], 10, 2);
+		add_action('admin_notices', [$this, 'display_adoption_notice']);
+
+	}
+
+	// POST-ADOPTION: Remove this method before pushing your next update.
+	public function enable_adoption_notice($upgrader_object, $options) {
+		if ($options['action'] === 'update') {
+			if ($options['type'] === 'plugin') {
+				if (!empty($options['plugins'])) {
+					if (in_array(plugin_basename(__FILE__), $options['plugins'])) {
+						set_transient(CodePotent\EnrichedEditor\PLUGIN_PREFIX.'_adoption_complete', 1);
+					}
+				}
+			}
+		}
+	}
+
+	// POST-ADOPTION: Remove this method before pushing your next update.
+	public function display_adoption_notice() {
+		if (get_transient(CodePotent\EnrichedEditor\PLUGIN_PREFIX.'_adoption_complete')) {
+			delete_transient(CodePotent\EnrichedEditor\PLUGIN_PREFIX.'_adoption_complete');
+			echo '<div class="notice notice-success is-dismissible">';
+			echo '<h3 style="margin:25px 0 15px;padding:0;color:#e53935;">IMPORTANT <span style="color:#aaa;">information about the <strong style="color:#333;">'.CodePotent\EnrichedEditor\PLUGIN_NAME.'</strong> plugin</h3>';
+			echo '<p style="margin:0 0 15px;padding:0;font-size:14px;">The <strong>'.CodePotent\EnrichedEditor\PLUGIN_NAME.'</strong> plugin has been officially adopted and is now managed by <a href="'.CodePotent\EnrichedEditor\PLUGIN_AUTHOR_URL.'" rel="noopener" target="_blank" style="text-decoration:none;">'.CodePotent\EnrichedEditor\PLUGIN_AUTHOR.'<span class="dashicons dashicons-external" style="display:inline;font-size:98%;"></span></a>. While it has been wonderful to serve the ClassicPress community with free plugins, tutorials, and resources for nearly 3 years, it\'s time that I move on to other endeavors. This notice is to inform you of the change, and to assure you that the plugin remains in good hands. I\'d like to extend my heartfelt thanks to you for making my plugins a staple within the community, and wish you great success with ClassicPress!</p>';
+			echo '<p style="margin:0 0 15px;padding:0;font-size:14px;font-weight:600;">All the best!</p>';
+			echo '<p style="margin:0 0 15px;padding:0;font-size:14px;">~ John Alarcon <span style="color:#aaa;">(Code Potent)</span></p>';
+			echo '</div>';
+		}
 	}
 
 	public function disable_for_editor( $settings, $editor_id ) {
